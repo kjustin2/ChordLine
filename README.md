@@ -46,3 +46,4 @@ Sources
 
 Fixes locally but fails github pages: npm install @rollup/rollup-win32-x64-msvc
 
+Run npm install @rollup/rollup-win32-x64-msvc locally but then remove from package.json
