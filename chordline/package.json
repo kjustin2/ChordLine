@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.52.4",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.48.1",
     "@tanstack/react-router": "^1.132.47",
