@@ -42,4 +42,5 @@ Sources
 
 ### Error: Cannot find module @rollup/rollup-win32-x64-msvc
 
-Run: npm install @rollup/rollup-win32-x64-msvc
+Fixes locally but fails github pages: npm install @rollup/rollup-win32-x64-msvc
+
