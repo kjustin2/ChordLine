@@ -2,18 +2,16 @@
 
 An app to revolutionize the experience of local live musicians.
 
-## Local Development
+## Local Testing
 
 ### Setup
 
-```bash
-cd chordline
-
-supabase start  # Start local Supabase
+cd chordline supabase start
 npm run dev
-```
 
 ## Generation Initial Command
+
+Using Vite + TanStack + TailwindCSS
 
 npx gitpick TanStack/router/tree/main/examples/react/start-supabase-basic start-supabase-basic
 cd chordline
@@ -24,19 +22,16 @@ Sources
 
 - <https://tanstack.com/start/latest/docs/framework/react/quick-start>
 - <https://github.com/TanStack/router/tree/main/examples/react/start-supabase-basic>
-- <https://supabase.com/docs/guides/local-development/cli/getting-started?queryGroups=platform&platform=windows>
-- <https://docs.deno.com/runtime/getting_started/installation/>
 
-## Tools
+## Tools Used
 
-- TanStack Start
+- TanStack
+- ShadCN UI
+- React
+- Supabase DB + Supabase Edge Functions
+- Hono
 - Vite
 - TailwindCSS
-- GitHub Pages
-- Supabase
-- ShadCN
-- Hono
-- Deno
 
 ## Learnings
 
