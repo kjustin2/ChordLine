@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  base: '/ChordLine/',
   plugins: [
     tsConfigPaths({
       projects: ['./tsconfig.json'],
