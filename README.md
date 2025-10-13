@@ -6,6 +6,8 @@ An app to revolutionize the experience of local live musicians.
 
 ### Setup
 
+Run from WSL -
+
 cd chordline supabase start
 npm run dev
 
