@@ -30,7 +30,9 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -f package-lock.json
+          npm install
         working-directory: chordline
 
       - name: Build with environment variables
