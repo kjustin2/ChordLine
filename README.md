@@ -4,6 +4,11 @@ An app to revolutionize the experience of local live musicians.
 
 ## Local Dev
 
+Terminal One (DB):
+[Ensure Docker Installed and Running](https://docs.docker.com/desktop)
+npx supabase start
+
+Terminal Two (Frontend):
 cd apps/web
 npm install (one time)
 npm run dev
