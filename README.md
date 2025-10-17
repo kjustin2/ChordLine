@@ -21,6 +21,14 @@ cd apps/api
 pnpm start:dev
 [View Backend](http://localhost:3001/docs)
 
+One Command:
+DB
+npx supabase start
+API
+pnpm --filter api start:dev
+Web
+pnpm --filter web dev
+
 ## Tech Stack
 
 Web Hosting: Vercel
