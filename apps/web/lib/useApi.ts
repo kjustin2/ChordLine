@@ -1,11 +1,14 @@
 "use client";
 import { useAuth } from "@clerk/nextjs";
+import { useCallback } from "react";
 import { api } from "@/lib/api";
 
 export function useApi() {
   const { isLoaded, isSignedIn, getToken } = useAuth();
 
-  async function apiAuthed<T>(path: string, init?: RequestInit) {
+  // Memoize apiAuthed so components can safely include it in effect deps
+  // without causing repeated calls due to function identity changes.
+  const apiAuthed = useCallback(async function apiAuthed<T>(path: string, init?: RequestInit) {
     if (!isLoaded || !isSignedIn) {
       console.warn("User not signed in or Clerk not loaded");
       return null;
@@ -18,7 +21,7 @@ export function useApi() {
     }
 
     return api<T>(path, token, init);
-  }
+  }, [isLoaded, isSignedIn, getToken]);
 
   return { apiAuthed };
 }

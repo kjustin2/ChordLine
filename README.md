@@ -35,9 +35,16 @@ pnpm --filter web dev
 ## Tech Stack
 
 Web Hosting: Vercel
+https://vercel.com/justin-kramers-projects-d02423f4/chord-line-web/settings/environment-variables
+
 Backend Hosting: Render
+https://dashboard.render.com/web/srv-d40n85ngi27c73ek48kg/deploys/dep-d40nt6gdl3ps73d685eg
+
 Database: Supabase
+https://supabase.com/dashboard/project/lswbxreiunnuxmkqocto/database/schemas
+
 Auth: Clerk
+https://dashboard.clerk.com/apps/app_3454QGSXgUVMulGaSoQLFjllTU3/instances/ins_3454QEBqZR9oLBPWoEm88yiINwb/jwt-templates
 
 Web Framework: NextJS + Nest + Fastify
 Web UI: ShadCN + Tailwind
