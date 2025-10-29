@@ -44,6 +44,9 @@ importers:
       '@prisma/client':
         specifier: ^6.17.1
         version: 6.17.1(prisma@6.17.1(typescript@5.9.3))(typescript@5.9.3)
+      dotenv:
+        specifier: ^16.1.4
+        version: 16.6.1
       jsonwebtoken:
         specifier: ^9.0.2
         version: 9.0.2
@@ -6898,7 +6901,7 @@ snapshots:
 
   dotenv-expand@12.0.1:
     dependencies:
-      dotenv: 16.4.7
+      dotenv: 16.6.1
 
   dotenv@16.4.7: {}
 
