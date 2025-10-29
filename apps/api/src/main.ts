@@ -14,7 +14,7 @@ async function bootstrap() {
   );
 
   await app.register(cors, {
-    origin: ['http://localhost:3000'],
+    origin: ['https://chord-line-web.vercel.app/', 'http://localhost:3000'],
     allowedHeaders: ['Authorization','Content-Type'],
     methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
   });
