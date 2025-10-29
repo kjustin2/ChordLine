@@ -5,16 +5,18 @@ import { useApi } from "@/lib/useApi";
 
 export default function UsersPage() {
   const { apiAuthed } = useApi();
-  const [users, setUsers] = useState<any[]>([]);
+
+  type User = { id: string; email?: string } & Record<string, unknown>;
+
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     async function fetchUsers() {
-      const data = await apiAuthed<any[]>("/v1/users");
+      const data = await apiAuthed<User[]>("/v1/users");
       if (data) setUsers(data);
     }
     fetchUsers();
   }, [apiAuthed]);
-
   return (
     <div className="p-4">
       <SignedOut><SignInButton /></SignedOut>

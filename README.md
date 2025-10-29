@@ -45,3 +45,10 @@ Web UI: ShadCN + Tailwind
 Testing: Playwright
 Package Manager: pnpm
 ORM: Prisma
+
+
+## Build Commands
+
+pnpm --filter web run build
+pnpm --filter api exec prisma generate
+pnpm --filter api run build
