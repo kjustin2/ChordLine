@@ -34,6 +34,10 @@ pnpm --filter web dev
 
 ## Tech Stack
 
+Temporarily Render for now to figure out experience
+and costs. Not pausing Vercel since they don't charge for
+overusage on hobby plan.
+
 Web Hosting: Vercel
 https://vercel.com/justin-kramers-projects-d02423f4/chord-line-web/settings/environment-variables
 
