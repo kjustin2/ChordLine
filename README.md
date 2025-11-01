@@ -11,6 +11,15 @@ cd apps/web
 npm install
 cd apps/api
 pnpm install
+---------------------------------------------------------
+
+One Command:
+DB
+npx supabase start
+pnpm --filter api start:dev
+pnpm --filter web dev
+
+---------------------------------------------------------
 
 Terminal One (DB):
 ./supabase.exe start
@@ -26,17 +35,7 @@ cd apps/api
 pnpm start:dev
 [View Backend](http://localhost:3001/docs)
 
-One Command:
-DB
-npx supabase start
-pnpm --filter api start:dev
-pnpm --filter web dev
-
 ## Tech Stack
-
-Temporarily Render for now to figure out experience
-and costs. Not pausing Vercel since they don't charge for
-overusage on hobby plan.
 
 Web Hosting: Vercel
 https://vercel.com/justin-kramers-projects-d02423f4/chord-line-web/settings/environment-variables
