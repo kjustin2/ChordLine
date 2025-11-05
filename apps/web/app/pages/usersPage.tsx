@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { useApi } from "@/lib/useApi";
+import type { User } from "@chordline/types";
 
 export default function UsersPage() {
   const { apiAuthed } = useApi();
-
-  type User = { id: string; email?: string } & Record<string, unknown>;
 
   const [users, setUsers] = useState<User[]>([]);
 
