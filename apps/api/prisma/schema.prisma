@@ -13,3 +13,393 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum BandStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum BandMemberRole {
+  LEADER
+  MEMBER
+}
+
+enum BandMemberStatus {
+  INVITED
+  ACTIVE
+  INACTIVE
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CANCELED
+}
+
+enum EventType {
+  SHOW
+  REHEARSAL
+  PRACTICE
+  RECORDING
+  MEETING
+  OTHER
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  COMPLETED
+  CANCELED
+}
+
+enum ExternalAccountProvider {
+  SPOTIFY
+  OPEN_WEATHER_MAP
+  GOOGLE_PLACES
+  OTHER
+}
+
+enum SongIdeaStatus {
+  DRAFT
+  SHARED
+  ARCHIVED
+}
+
+enum SetlistVisibility {
+  PRIVATE
+  BAND
+  PUBLIC
+}
+
+enum EarningSplitStatus {
+  PENDING
+  PAID
+  CANCELED
+}
+
+enum NotificationType {
+  GENERAL
+  INVITATION
+  EVENT_UPDATE
+  EVENT_RSVP
+  EARNING_UPDATE
+  SONG_IDEA
+  SYSTEM
+}
+
+model User {
+  id             String               @id @default(cuid())
+  clerkUserId    String?              @unique
+  email          String               @unique
+  displayName    String?
+  avatarUrl      String?
+  instrument     String?
+  primaryGenre   String?
+  city           String?
+  country        String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  ownedBands         Band[]               @relation("BandOwner")
+  memberships        BandMember[]
+  invitationsSent    Invitation[]         @relation("InvitationInviter")
+  invitationsAccepted Invitation[]        @relation("InvitationAcceptedBy")
+  notifications      Notification[]
+  setlistsCreated    Setlist[]            @relation("SetlistAuthor")
+  songIdeas          SongIdea[]           @relation("SongIdeaAuthor")
+  eventsCreated      Event[]              @relation("EventCreatedBy")
+  earningsRecorded   Earning[]            @relation("EarningRecorder")
+  externalAccounts   ExternalAccount[]    @relation("UserExternalAccount")
+}
+
+model Band {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  genre       String?
+  createdById String
+  status      BandStatus    @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  createdBy        User                @relation("BandOwner", fields: [createdById], references: [id])
+  members          BandMember[]
+  invitations      Invitation[]
+  events           Event[]
+  setlists         Setlist[]
+  songIdeas        SongIdea[]
+  earnings         Earning[]
+  venues           Venue[]
+  externalAccounts ExternalAccount[]   @relation("BandExternalAccount")
+
+  @@index([createdById])
+}
+
+model BandMember {
+  id        String            @id @default(cuid())
+  bandId    String
+  userId    String
+  role      BandMemberRole    @default(MEMBER)
+  status    BandMemberStatus  @default(ACTIVE)
+  joinedAt  DateTime          @default(now())
+  leftAt    DateTime?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  band Band @relation(fields: [bandId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  eventRoles    EventRole[]
+  earningSplits EarningSplit[]
+
+  @@unique([bandId, userId])
+  @@index([userId])
+}
+
+model Invitation {
+  id            String            @id @default(cuid())
+  bandId        String
+  email         String
+  invitedById   String
+  acceptedById  String?
+  token         String            @unique
+  status        InvitationStatus  @default(PENDING)
+  expiresAt     DateTime?
+  respondedAt   DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  band       Band @relation(fields: [bandId], references: [id])
+  invitedBy  User @relation("InvitationInviter", fields: [invitedById], references: [id])
+  acceptedBy User? @relation("InvitationAcceptedBy", fields: [acceptedById], references: [id])
+
+  @@index([bandId])
+  @@index([email])
+}
+
+model ExternalAccount {
+  id           String                    @id @default(cuid())
+  bandId       String?
+  userId       String?
+  provider     ExternalAccountProvider
+  externalId   String
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  metadata     Json?
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+
+  band Band? @relation("BandExternalAccount", fields: [bandId], references: [id])
+  user User? @relation("UserExternalAccount", fields: [userId], references: [id])
+
+  @@index([bandId])
+  @@index([userId])
+  @@unique([provider, externalId])
+}
+
+model Venue {
+  id          String   @id @default(cuid())
+  bandId      String
+  name        String
+  description String?
+  addressLine1 String?
+  addressLine2 String?
+  city        String?
+  state       String?
+  postalCode  String?
+  country     String?
+  latitude    Float?
+  longitude   Float?
+  placeId     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  band   Band    @relation(fields: [bandId], references: [id])
+  events Event[]
+
+  @@index([bandId])
+  @@index([placeId])
+}
+
+model Event {
+  id            String       @id @default(cuid())
+  bandId        String
+  createdById   String
+  title         String
+  description   String?
+  type          EventType    @default(SHOW)
+  status        EventStatus  @default(DRAFT)
+  venueId       String?
+  locationName  String?
+  addressLine1  String?
+  addressLine2  String?
+  city          String?
+  state         String?
+  postalCode    String?
+  country       String?
+  latitude      Float?
+  longitude     Float?
+  startsAt      DateTime
+  endsAt        DateTime?
+  doorTime      DateTime?
+  rsvpDeadline  DateTime?
+  notes         String?
+  cancelledAt   DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  band      Band      @relation(fields: [bandId], references: [id])
+  createdBy User      @relation("EventCreatedBy", fields: [createdById], references: [id])
+  venue     Venue?    @relation(fields: [venueId], references: [id])
+  roles     EventRole[]
+  setlists  EventSetlist[]
+  earnings  Earning[] @relation("EventEarnings")
+
+  @@index([bandId, startsAt])
+  @@index([venueId])
+}
+
+model EventRole {
+  id             String    @id @default(cuid())
+  eventId        String
+  memberId       String
+  role           String
+  compensation   Decimal?  @db.Decimal(10, 2)
+  isConfirmed    Boolean   @default(false)
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  event  Event      @relation(fields: [eventId], references: [id])
+  member BandMember @relation(fields: [memberId], references: [id])
+
+  @@unique([eventId, memberId])
+  @@index([memberId])
+}
+
+model Setlist {
+  id          String            @id @default(cuid())
+  bandId      String
+  createdById String
+  title       String
+  description String?
+  visibility  SetlistVisibility @default(BAND)
+  archivedAt  DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  band      Band   @relation(fields: [bandId], references: [id])
+  createdBy User   @relation("SetlistAuthor", fields: [createdById], references: [id])
+  songs     SetlistSong[]
+  events    EventSetlist[]
+
+  @@index([bandId])
+}
+
+model EventSetlist {
+  id        String  @id @default(cuid())
+  eventId   String
+  setlistId String
+  position  Int     @default(0)
+
+  event   Event   @relation(fields: [eventId], references: [id])
+  setlist Setlist @relation(fields: [setlistId], references: [id])
+
+  @@unique([eventId, setlistId])
+  @@index([setlistId])
+}
+
+model SetlistSong {
+  id           String   @id @default(cuid())
+  setlistId    String
+  title        String
+  artist       String?
+  keySignature String?
+  tempo        Int?
+  position     Int
+  durationSec  Int?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  setlist Setlist @relation(fields: [setlistId], references: [id])
+
+  @@index([setlistId, position])
+}
+
+model SongIdea {
+  id        String         @id @default(cuid())
+  bandId    String
+  authorId  String
+  title     String
+  body      String
+  tags      String[]
+  status    SongIdeaStatus @default(DRAFT)
+  sharedAt  DateTime?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  band   Band @relation(fields: [bandId], references: [id])
+  author User @relation("SongIdeaAuthor", fields: [authorId], references: [id])
+
+  @@index([bandId])
+  @@index([authorId])
+}
+
+model Earning {
+  id            String    @id @default(cuid())
+  bandId        String
+  eventId       String?
+  recordedById  String
+  totalAmount   Decimal   @db.Decimal(12, 2)
+  currency      String    @default("USD")
+  description   String?
+  paidAt        DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  band       Band    @relation(fields: [bandId], references: [id])
+  event      Event?  @relation("EventEarnings", fields: [eventId], references: [id])
+  recordedBy User    @relation("EarningRecorder", fields: [recordedById], references: [id])
+  splits     EarningSplit[]
+
+  @@index([bandId])
+  @@index([eventId])
+}
+
+model EarningSplit {
+  id        String             @id @default(cuid())
+  earningId String
+  memberId  String
+  amount    Decimal            @db.Decimal(12, 2)
+  status    EarningSplitStatus @default(PENDING)
+  paidAt    DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  earning Earning    @relation(fields: [earningId], references: [id])
+  member  BandMember @relation(fields: [memberId], references: [id])
+
+  @@unique([earningId, memberId])
+  @@index([memberId])
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  recipientId String
+  type        NotificationType
+  title       String
+  body        String
+  payload     Json?
+  readAt      DateTime?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  recipient User @relation(fields: [recipientId], references: [id])
+
+  @@index([recipientId, readAt])
+}

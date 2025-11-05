@@ -1,0 +1,18 @@
+export type BandStatus = 'ACTIVE' | 'INACTIVE' | 'ARCHIVED';
+export type BandMemberRole = 'LEADER' | 'MEMBER';
+export type BandMemberStatus = 'INVITED' | 'ACTIVE' | 'INACTIVE';
+export type InvitationStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED' | 'EXPIRED' | 'CANCELED';
+export type EventType = 'SHOW' | 'REHEARSAL' | 'PRACTICE' | 'RECORDING' | 'MEETING' | 'OTHER';
+export type EventStatus = 'DRAFT' | 'PUBLISHED' | 'COMPLETED' | 'CANCELED';
+export type ExternalAccountProvider = 'SPOTIFY' | 'OPEN_WEATHER_MAP' | 'GOOGLE_PLACES' | 'OTHER';
+export type SongIdeaStatus = 'DRAFT' | 'SHARED' | 'ARCHIVED';
+export type SetlistVisibility = 'PRIVATE' | 'BAND' | 'PUBLIC';
+export type EarningSplitStatus = 'PENDING' | 'PAID' | 'CANCELED';
+export type NotificationType =
+  | 'GENERAL'
+  | 'INVITATION'
+  | 'EVENT_UPDATE'
+  | 'EVENT_RSVP'
+  | 'EARNING_UPDATE'
+  | 'SONG_IDEA'
+  | 'SYSTEM';

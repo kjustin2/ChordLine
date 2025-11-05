@@ -1,0 +1,30 @@
+import type { EventStatus, EventType } from '../enums';
+import type { ISODateString } from '../common';
+export type Event = {
+    id: string;
+    bandId: string;
+    createdById: string;
+    title: string;
+    description?: string | null;
+    type: EventType;
+    status: EventStatus;
+    venueId?: string | null;
+    locationName?: string | null;
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
+    startsAt: ISODateString;
+    endsAt?: ISODateString | null;
+    doorTime?: ISODateString | null;
+    rsvpDeadline?: ISODateString | null;
+    notes?: string | null;
+    cancelledAt?: ISODateString | null;
+    createdAt: ISODateString;
+    updatedAt: ISODateString;
+};
+//# sourceMappingURL=Event.d.ts.map
