@@ -1,0 +1,30 @@
+[
+	{
+		"task": "Design headless-friendly auth/test strategy for API e2e coverage",
+		"status": "todo"
+	},
+	{
+		"task": "Implement NestJS API e2e tests covering core user and band flows",
+		"status": "todo"
+	},
+	{
+		"task": "Draft responsive frontend redesign plan with mobile-first layouts",
+		"status": "todo"
+	},
+	{
+		"task": "Implement redesigned Next.js frontend and shared UI components",
+		"status": "todo"
+	},
+	{
+		"task": "Add Playwright tests validating redesigned flows",
+		"status": "todo"
+	},
+	{
+		"task": "Document local integration testing commands in README",
+		"status": "todo"
+	},
+	{
+		"task": "Update .github/copilot-instructions.md with new workflows",
+		"status": "todo"
+	}
+]

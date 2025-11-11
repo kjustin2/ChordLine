@@ -26,7 +26,7 @@ pnpm --filter @chordline/types run build
 	- Web: `pnpm --filter web exec -- next dev` (or `pnpm --filter web run dev`)
 
 High-level architecture & dataflow
-- Frontend (`apps/web`) is a Next.js App Router app using Clerk for auth. Components call `apps/web/lib/api.ts` which requires `NEXT_PUBLIC_API_URL` to point at the API (Render URL in prod).
+- Frontend (`apps/web`) is a Next.js App Router app using Clerk for auth. Data fetching lives in `apps/web/lib/apiClient.ts`, which wraps the authenticated fetcher from `useApi` and depends on `NEXT_PUBLIC_API_URL` being set to the API base.
 - Backend (`apps/api`) is NestJS running on Fastify (see `apps/api/src/main.ts`). The Nest app exposes Swagger at `/docs` and uses a `/v1` prefix pattern in controllers (example: `apps/api/src/users/users.controller.ts`).
 - Shared types in `packages/types` provide runtime typings (e.g., `User`) and must be built (TS -> `dist`) before other packages import them.
 
@@ -41,8 +41,8 @@ Platform & deploy notes
 
 Project-specific patterns & conventions
 - API namespace: use `/v1` for controllers (see `apps/api/src/users/users.controller.ts`).
-- Types-first: add or change DTOs / entities in `packages/types/src/*` and run `pnpm --filter @chordline/types run build` before compiling other packages.
-- Auth pattern: frontend should get a token via Clerk's `getToken({ template: 'default' })` (see `apps/web/lib/useApi.ts`) and call `apps/web/lib/api.ts` passing Authorization header.
+- Types-first: add or change DTOs / entities in `packages/types/src/*` and run `pnpm --filter @chordline/types run build` before compiling other packages. Shared enums expose constants (e.g., `SONG_IDEA_STATUSES`).
+- Auth pattern: frontend obtains a Clerk token via `useApi.ts` and routes requests through helpers in `apps/web/lib/apiClient.ts`.
 
 Tooling quick references (what we use and where to look)
 - Next.js (App Router, v15): `apps/web/*` — middleware in `apps/web/middleware.ts`, layout in `apps/web/app/layout.tsx`, pages under `apps/web/app/`.
@@ -97,10 +97,10 @@ Last updated: include date in commit message when changing this file.
 - **Auth guard:** `apps/api/src/auth/jwt.guard.ts` uses `@clerk/backend` `verifyToken`; keep `CLERK_JWT_KEY` and `AUTHORIZED_CLERK_PARTY` in Render/`.env` aligned with your Clerk dashboard so `req.user` stays populated.
 - **Routing pattern:** `UsersController` serves `/v1/users`; mirror the `/v1` prefix for future modules and always type responses with `@chordline/types` exports.
 - **Prisma workflow:** Schema at `apps/api/prisma/schema.prisma`, generated client in `apps/api/generated/prisma`. Run `pnpm --filter api run prisma:generate` after schema edits and before committing prod builds.
-- **Testing status:** The stock e2e test (`apps/api/test/app.e2e-spec.ts`) still asserts `GET / -> "Hello World!"`; fix or skip it before depending on `pnpm --filter api run test:e2e`.
-- **Web shell:** `apps/web/app/layout.tsx` wraps pages with `ClerkProvider`; header buttons rely on Clerk components so keep them server-compatible.
-- **Client data flow:** `apps/web/lib/api.ts` builds requests against `process.env.NEXT_PUBLIC_API_URL`; missing this variable breaks every fetch. `useApi.ts` obtains a Clerk session token and returns `null` until the user is authenticated—always guard on that in effects.
-- **Reference screen:** `apps/web/app/pages/usersPage.tsx` demonstrates the expected `apiAuthed` usage plus `SignedIn/SignedOut` gating.
+- **Testing status:** `apps/api/test/app.e2e-spec.ts` covers the band workflow using the in-memory Prisma service; run it with `pnpm --filter api run test:e2e` (no containers required).
+- **Web shell:** `apps/web/app/layout.tsx` wraps pages with `ClerkProvider` and `BandProvider`, while `AppShell` under `apps/web/components/layout` renders responsive navigation.
+- **Client data flow:** `apps/web/lib/apiClient.ts` centralises REST helpers that wrap `useApi()`; the helpers require `process.env.NEXT_PUBLIC_API_URL` to be set.
+- **Reference screen:** `apps/web/app/page.tsx` composes the dashboard sections (`OverviewSection`, `EventsSection`, etc.) inside `AppShell`.
 - **Clerk middleware:** `apps/web/middleware.ts` applies `clerkMiddleware` to all Next routes except static assets; new API routes must accept Clerk headers (`Authorization`, `Clerk-...`).
 - **Environment sync:** Minimum secrets are `NEXT_PUBLIC_API_URL` (web), `CLERK_JWT_KEY`, `AUTHORIZED_CLERK_PARTY`, and `DATABASE_URL`. Use `vercel env pull` to sync Vercel envs locally (per Vercel docs) and mirror the same keys in Render's dashboard.
 - **Render deployment:** Build command `pnpm install && pnpm --filter api run build:prod`; start command `pnpm --filter api run start:prod`. Render auto-sets `PORT`, so never hard-code it in Nest.
