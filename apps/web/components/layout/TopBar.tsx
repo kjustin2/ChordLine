@@ -1,6 +1,6 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { UserButton } from "@/lib/auth";
 import { useBandContext, type BandContextValue } from "@/providers/BandProvider";
 
 export function TopBar() {

@@ -1,8 +1,8 @@
 import { type Metadata } from 'next'
-import { ClerkProvider } from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { BandProvider } from '@/providers/BandProvider'
+import { AppAuthProvider } from '@/lib/auth'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,12 +25,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
+    <AppAuthProvider>
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <BandProvider>{children}</BandProvider>
         </body>
       </html>
-    </ClerkProvider>
+    </AppAuthProvider>
   )
 }

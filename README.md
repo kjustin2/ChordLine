@@ -51,6 +51,12 @@ Key URLs
   ```bash
   pnpm --filter web run lint
   ```
+- Frontend dashboard e2e (Playwright with mocked API + auth):
+	```bash
+	pnpm --filter web run test:e2e
+	```
+
+	The first run may prompt Playwright to install browsers: accept the prompt or run `pnpm --filter web exec -- playwright install` ahead of time.
 
 The API tests rely on `apps/api/test/utils/in-memory-prisma.service.ts`, which mirrors Prisma behaviour in memory so CI and local runs do not require Docker or Supabase.
 

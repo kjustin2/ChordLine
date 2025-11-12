@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@/lib/auth";
 import { NAV_SECTIONS } from "./navigation";
 import { useSectionObserver } from "@/hooks/useSectionObserver";
 import { TopBar } from "@/components/layout/TopBar";
